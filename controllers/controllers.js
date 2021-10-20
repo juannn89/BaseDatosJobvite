@@ -35,4 +35,10 @@ const editarProducto = async (edicion, callback) => {
         .findOneAndUpdate(filtroProducto, operacion, { upsert: true, returnOriginal: true }, callback);
 }
 
-export { queryAllProductos, crearProducto, editarProducto };
+const eliminarProducto = async (id, callback) => {
+    const filtroProducto = { _id: new ObjectId(id) };
+    const conexion = getDB();
+    await conexion.collection('productos').deleteOne(filtroProducto, callback);
+}
+
+export { queryAllProductos, crearProducto, editarProducto, eliminarProducto };
