@@ -1,4 +1,5 @@
 import { getDB } from '../db/db.js';
+import { ObjectId } from 'mongodb';
 
 const queryAllProductos = async (callback) => {
     const conexion = getDB();
@@ -14,10 +15,24 @@ const crearProducto = async (datoProducto, callback) => {
             Object.keys(datoProducto).includes('codigo') && Object.keys(datoProducto).includes('nombre') && Object.keys(datoProducto).includes('valor') && Object.keys(datoProducto).includes('estado')
         ) {
             const conexion = getDB();
-            conexion.collection('productos').insertOne(datoProducto, callback);
+            await conexion
+                .collection('productos')
+                .insertOne(datoProducto, callback);
         } else {
             return 'error';
     }
 };
 
-export { queryAllProductos, crearProducto };
+const editarProducto = async (edicion, callback) => {
+    const filtroProducto = { _id: new ObjectId(edicion.id) };
+    delete edicion.id;
+    const operacion = {
+        $set: edicion,
+    };
+    const conexion = getDB();
+    await conexion
+        .collection('productos')
+        .findOneAndUpdate(filtroProducto, operacion, { upsert: true, returnOriginal: true }, callback);
+}
+
+export { queryAllProductos, crearProducto, editarProducto };
