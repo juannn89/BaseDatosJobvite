@@ -3,18 +3,11 @@ import Express from "express";
 import { MongoClient, ObjectId } from "mongodb";
 import Cors from "cors";
 import dotenv from 'dotenv';
+import { conectarBD, getDB } from './db/db.js';
 
 dotenv.config({ path: './.env'});
 
-const stringConexion = process.env.DATABASE_URL;
-
-const client = new MongoClient
-(stringConexion, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-
-let conexion;
+//let conexion;
 
 const app = Express();
 
@@ -23,6 +16,7 @@ app.use(Cors());
 
 app.get('/productos', (req, res) => {
     console.log('alguien hizo get en la ruta /productos');
+    const conexion = getDB();
     conexion
         .collection('productos')
         .find({})
@@ -44,6 +38,7 @@ app.post('/productos/nuevo', (req, res) => {
         if (
             Object.keys(datoProducto).includes('codigo') && Object.keys(datoProducto).includes('nombre') && Object.keys(datoProducto).includes('valor') && Object.keys(datoProducto).includes('estado')
         ) {
+            const conexion = getDB();
             conexion.collection('productos').insertOne(datoProducto, (err, result) => {
                 if (err) {
                     console.error(err);
@@ -69,6 +64,7 @@ app.patch('/productos/editar', (req, res) => {
     const operacion = {
         $set: edicion,
     };
+    const conexion = getDB();
     conexion.collection('productos').findOneAndUpdate(filtroProducto, operacion, { upsert: true, returnOriginal: true }, (err, serult) => {
         if (err) {
             console.error('Error de actualización', err);
@@ -82,6 +78,7 @@ app.patch('/productos/editar', (req, res) => {
 
 app.delete('/productos/eliminar', (req, res) => {
     const filtroProducto = { _id: new ObjectId(req.body.id) };
+    const conexion = getDB();
     conexion.collection('productos').deleteOne(filtroProducto, (err, result) => {
         if (err) {
             console.error(err);
@@ -93,16 +90,9 @@ app.delete('/productos/eliminar', (req, res) => {
 })
 
 const main = () => {
-    client.connect((err, db) => {
-        if (err) {
-            console.error('Error de conexion');
-        }
-        conexion = db.db('productos');
-        console.log('conexión exitosa');
-        return app.listen(process.env.PORT, () => {
+    return app.listen(process.env.PORT, () => {
         console.log(`escuchando puerto ${process.env.PORT}`);
-        });
     });
 }
 
-main();
+conectarBD(main);
