@@ -1,1 +1,2 @@
-mongodb+srv://admin:<password>@proyectojobvite.leorl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+PORT=5000
+DATABASE_URL = "mongodb+srv://admin:admin@proyectojobvite.leorl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
