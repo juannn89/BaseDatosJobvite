@@ -1,5 +1,6 @@
 import { getDB } from '../db/db.js';
 import { ObjectId } from 'mongodb';
+import { ObjectID } from 'bson';
 
 const queryAllProductos = async (callback) => {
     const conexion = getDB();
@@ -9,6 +10,15 @@ const queryAllProductos = async (callback) => {
         .limit(50)
         .toArray(callback);
 };
+
+const consultarProducto = async (id, callback) => {
+    const conexion = getDB();
+    await conexion
+        .collection('productos')
+        .findOne({_id: new ObjectID(id)})
+        .limit(50)
+        .toArray(callback);
+}
 
 const crearProducto = async (datoProducto, callback) => {
         if (
@@ -23,9 +33,8 @@ const crearProducto = async (datoProducto, callback) => {
     }
 };
 
-const editarProducto = async (edicion, callback) => {
+const editarProducto = async (id, edicion, callback) => {
     const filtroProducto = { _id: new ObjectId(edicion.id) };
-    delete edicion.id;
     const operacion = {
         $set: edicion,
     };
