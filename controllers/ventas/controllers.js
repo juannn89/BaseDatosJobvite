@@ -25,7 +25,7 @@ const consultarVenta = async (id, callback) => {
 };
 
 const editarVenta = async (id, edicion, callback) => {
-    const filtroVenta = { _id: new ObjectId(edicion.id) };
+    const filtroVenta = { _id: new ObjectId(id) };
     const operacion = {
         $set: edicion,
     };
