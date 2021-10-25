@@ -23,7 +23,10 @@ const autorizacionEstadoUsuario = async (req, res, next) => {
             console.log('soy un middleware');
             //5. Si el usuario esta pendiente o habilidato, ejecutar next.
             next();
-        };
+        }
+        else {
+            next();
+        }
     });
 }
 
