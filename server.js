@@ -14,6 +14,8 @@ dotenv.config({ path: './.env'});
 
 //let conexion;
 
+const port = process.env.PORT || 5000;
+
 const app = Express();
 
 app.use(Express.json());
@@ -40,8 +42,8 @@ app.use(rutasUsuarios);
 app.use(rutasVentas);
 
 const main = () => {
-    return app.listen(process.env.PORT, () => {
-        console.log(`escuchando puerto ${process.env.PORT}`);
+    return app.listen(port, () => {
+        console.log(`escuchando puerto ${port}`);
     });
 }
 
